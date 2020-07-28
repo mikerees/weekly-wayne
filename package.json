@@ -1,0 +1,17 @@
+{
+  "name": "weekly-wayne",
+  "version": "1.0.0",
+  "description": "A weight tracking bot for discord",
+  "main": "bot.js",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "keywords": [],
+  "author": "Mike Rees",
+  "license": "ISC",
+  "dependencies": {
+    "discord.io": "https://github.com/woor/discord.io/tarball/gateway_v6",
+    "mysql2": "^2.1.0",
+    "winston": "^3.3.3"
+  }
+}
