@@ -11,13 +11,13 @@ logger.level = 'debug'
 
 console.log(auth)
 
-// const connection = mysql.createConnection({
-//   host: 'localhost',
-//   user: 'weeklywayne',
-//   database: 'weeklywayne',
-//   password: '9kgKHuNH5v'
-// })
-// connection.config.namedPlaceholders = true
+const connection = mysql.createConnection({
+  host: 'localhost',
+  user: 'weeklywayne',
+  database: 'weeklywayne',
+  password: '9kgKHuNH5v'
+})
+connection.config.namedPlaceholders = true
 
 const niceUnits = {
   lb: "Pounds",
