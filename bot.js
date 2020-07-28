@@ -59,10 +59,29 @@ bot.on("message", (user, userID, channelID, message, evt) => {
         break
       case "setUnitPreference":
         if (["lb", "kg", "st"].contains(args[0])) {
-          bot.sendMessage({
-            to: channelID,
-            message: evt.d.member.nick + ", your preference has been set to " + niceUnits[args[0]]
-          })
+          try {
+            await registerUser(evt)
+            await new Promise((resolve, reject) => {
+              connection.execute("UPDATE users SET unit_preference = :pref WHERE id = :id", {
+                pref: args[0],
+                id: evt.d.author.id
+              }, (err, res, fields) => {
+                if (err) {
+                  reject(err)
+                }
+                resolve(true)
+              })
+            })
+            bot.sendMessage({
+              to: channelID,
+              message: evt.d.member.nick + ", your preference has been set to " + niceUnits[args[0]]
+            })
+          } catch (e) {
+            bot.sendMessage({
+              to: channelID,
+              message: "Something went wrong!"
+            })
+          }
         } else {
           bot.sendMessage({
             to: channelID,
@@ -73,3 +92,37 @@ bot.on("message", (user, userID, channelID, message, evt) => {
 
   }
 })
+
+function userExists(userId) {
+  return new Promise((resolve, reject) => {
+    connection.execut("SELECT * FROM users WHERE id = :id", {id: userId}, (err, res, fields) => {
+      if (err) {
+        reject(err)
+      }
+      if (res.length) {
+        resolve(true)
+      } else {
+        resolve(false)
+      }
+    })
+  })
+}
+
+function registerUser(evt) {
+  return new Promise((resolve, reject) => {
+    if(await userExists(evt.d.author.id)) {
+      resolve(true)
+    }
+    connection.execute("INSERT INTO users VALUES (:id, :name, :sid, :pref)", {
+      id: evt.d.author.id,
+      name: evt.d.member.nick,
+      sid: evt.d.guild_id,
+      pref: "lb"
+    }, (err, res, fields) => {
+      if (err) {
+        reject(err)
+      }
+      resolve(true)
+    })
+  })
+}
